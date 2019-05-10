@@ -1,0 +1,585 @@
+" TODO:
+" 增加quickfix的key binding
+" 增加切换buffer的key binding
+" 如何进行版本控制？
+" ############################################################ 
+" Environment: _env
+" General: _gen
+" Key (re)Mappings: _mapping
+" Plugin: _plugin
+" VIM GUI: _gui
+" Formatting: _fmt
+" ############################################################ 
+
+" ############################################################ 
+" ENVIRONMENT:_env
+"	Identify platform:_env_platform
+" 	Basics: _env_basic
+" 	Windows Compatible: _env_comp
+" 	Arrow Key Fix: _env_keyFix
+" ############################################################ 
+" ENVIRONMENT {{{1
+" Identify platform _env_platform
+silent function! OSX()
+    return has('macunix')
+endfunction
+silent function! LINUX()
+    "return has('unix') && !has('macunix') && !has('win32unix')
+    return (has('unix') && !has('macunix')) || has('win32unix')
+endfunction
+silent function! WINDOWS()
+    return  (has('win32') || has('win64'))
+endfunction
+
+" Basics : _env_basic
+" This must be first, because it changes other options as a side effect.
+set nocompatible        " Must be first line
+if !WINDOWS()
+    set shell=/bin/sh
+endif
+
+" Windows Compatible : _env_comp
+" in windows, $VIM=C:/Program Files (x86)/Vim, $VIMRUNTIME=C:/Program Files (x86)/Vim/vim74
+if WINDOWS()
+  set runtimepath=$VIM,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$VIM/bundle/Vundle.vim
+  "source $VIMRUNTIME/vimrc_example.vim
+  source $VIMRUNTIME/mswin.vim
+  "set viminfo=$VIM/_viminfo
+endif
+" use bundles config
+"if WINDOWS() && filereadable(expand("$VIM/.vimrc.bundles"))
+    "source $VIM\.vimrc.bundles
+"endif
+
+" Linux Compatible
+if LINUX()
+  set runtimepath=$HOME/.vim,$HOME/.vim/after,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after
+  source $VIMRUNTIME/vimrc_example.vim
+  source $VIMRUNTIME/mswin.vim
+endif
+" use bundles config
+"if LINUX() && filereadable(expand("~/.vimrc.bundles"))
+    "source ~/.vimrc.bundles
+"endif
+
+" Arrow Key Fix : _env_keyFix
+" https://github.com/spf13/spf13-vim/issues/780
+if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
+    inoremap <silent> <C-[>OC <RIGHT>
+endif
+" }}}1
+
+" ############################################################ 
+" General: _gen
+"	Encoding: _gen_encoding
+" 	File Types: _gen_fileType
+" 	Misc settings: _gen_misc
+" ############################################################ 
+" General {{{1
+" Encoding: _gen_encoding
+	set encoding=utf-8
+	set fileencodings=utf-8,chinese,latin-1
+	"set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
+	"set fencs=utf8,gbk,gb2312,gb18030
+
+
+" File Types: _gen_fileType
+" if !has('gui')
+	"set term=$TERM          " Make arrow and other keys work
+" endif
+filetype plugin indent on   " Automatically detect file types.
+syntax on                   " Syntax highlighting
+set mouse=a                 " Automatically enable mouse usage
+set mousehide               " Hide the mouse cursor while typing
+"scriptencoding utf-8
+
+autocmd BufNewFile * :echom ">_<"
+autocmd FileType python :iabbrev <buffer> iff if:<left>
+
+if has('clipboard')
+	if has('unnamedplus')  " When possible use + register for copy-paste
+		set clipboard=unnamed,unnamedplus
+	else         " On mac and Windows, use * register for copy-paste
+		set clipboard=unnamed
+	endif
+endif
+
+" Most prefer to automatically switch to the current file directory when
+" a new buffer is opened; to prevent this behavior, add the following to
+" your .vimrc.before.local file:
+"   let g:spf13_no_autochdir = 1
+if !exists('g:spf13_no_autochdir')
+	autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
+	" Always switch to the current file directory
+endif
+
+" Misc settings: _gen_misc
+"set autowrite                       " Automatically write a file when leaving a modified buffer
+set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
+set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
+"set virtualedit=onemore             " Allow for cursor beyond last character
+set history=1000                    " Store a ton of history (default is 20)
+"set spell spelllang=en                           " Spell checking on
+set hidden                          " Allow buffer switching without saving
+set iskeyword-=.                    " '.' is an end of word designator
+set iskeyword-=#                    " '#' is an end of word designator
+set iskeyword-=-                    " '-' is an end of word designator
+
+" Instead of reverting the cursor to the last position in the buffer, we
+" set it to the first line when editing a git commit message
+au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+iabbrev @@ lizhang0101@gmail.com
+
+" http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
+" Restore cursor to file position in previous editing session
+" To disable this, add the following to your .vimrc.before.local file:
+"   let g:spf13_no_restore_cursor = 1
+"if !exists('g:spf13_no_restore_cursor')
+	"function! ResCur()
+		"if line("'\"") <= line("$")
+			"silent! normal! g`"
+			"return 1
+		"endif
+	"endfunction
+
+	"augroup resCur
+		"autocmd!
+		"autocmd BufWinEnter * call ResCur()
+	"augroup END
+"endif
+
+" Setting up the directories {2
+	"set backup                  " Backups are nice ...
+	"if has('persistent_undo')
+		"set undofile                " So is persistent undo ...
+		"set undolevels=1000         " Maximum number of changes that can be undone
+		"set undoreload=10000        " Maximum number lines to save for undo on a buffer reload
+	"endif
+	" Turn backup off
+	set nobackup
+	set nowb
+	set noswapfile
+
+	" To disable views add the following to your .vimrc.before.local file:
+	"   let g:spf13_no_views = 1
+	if !exists('g:spf13_no_views')
+		" Add exclusions to mkview and loadview
+		" eg: *.*, svn-commit.tmp
+		let g:skipview_files = [
+			\ '\[example pattern\]'
+			\ ]
+	endif
+" }}}1
+
+" ############################################################ 
+" Key (re)Mappings : _mapping
+" ############################################################ 
+" Key (re)Mappings {{{1
+let mapleader = ','
+
+" Learn Vimscript in the hard way
+inoremap <C-u> <esc>viwUi
+inoremap jk <esc>
+inoremap <esc> <nop>
+
+"  Common
+" Fast saving
+nmap <leader>w :w!<cr>
+" Switch to current dir
+map <leader>cd :cd %:p:h<cr>
+" OS specific
+if LINUX()
+	" Fast reloading of the .vimrc
+	map <leader>s :source ~/.vimrc<cr>
+	" Fast editing of the .vimrc
+	map <leader>e :e! ~/.vimrc<cr>
+endif
+if WINDOWS()
+	" Fast reloading of the .vimrc
+	map <leader>s :source $VIM/_vimrc<cr>
+	" Fast editing of the .vimrc
+	map <leader>e :e! $VIM/_vimrc<cr>
+endif
+
+" Easier moving in tabs and windows
+" The lines conflict with the default digraph mapping of <C-K>
+" If you prefer that functionality, add the following to your
+" .vimrc.before.local file:
+"   let g:spf13_no_easyWindows = 1
+if !exists('g:spf13_no_easyWindows')
+	map <C-J> <C-W>j<C-W>_
+	map <C-K> <C-W>k<C-W>_
+	map <C-L> <C-W>l<C-W>_
+	map <C-H> <C-W>h<C-W>_
+endif
+
+" Wrapped lines goes down/up to next row, rather than next line in file.
+noremap j gj
+noremap k gk
+
+" Yank from the cursor to the end of the line, to be consistent with C and D.
+nnoremap Y y$
+
+" Most prefer to toggle search highlighting rather than clear the current
+" search results. To clear search highlighting rather than toggle it on
+" and off, add the following to your .vimrc.before.local file:
+let g:spf13_clear_search_highlight = 1
+if exists('g:spf13_clear_search_highlight')
+	nmap <silent> <leader>/ :nohlsearch<CR>
+else
+	nmap <silent> <leader>/ :set invhlsearch<CR>
+endif
+" }}}1
+
+" ############################################################ 
+" Plugin: _plugin
+" ############################################################ 
+" Plugin {{{1
+" Simplenote
+" let g:SimplenoteUsername = "lizhang0101@gmail.com"
+" let g:SimplenotePassword = ""
+set nocompatible              " be iMproved
+filetype off                  " required!
+
+if WINDOWS()
+    set rtp+=$VIM/bundle/Vundle.vim/
+    let path='$VIM/bundle'
+elseif LINUX()
+    set rtp+=~/.vim/bundle/Vundle.vim/
+    let path="~/.vim/bundle"
+endif
+
+call vundle#begin(path)
+
+" let Vundle manage Vundle
+" required!
+Bundle 'gmarik/Vundle.vim'
+
+" ===== List of plugins =====
+" 1. original repos on GitHub:在Github vim-scripts 用户下的repos,只需要写出repos名称
+" 2. vim-scripts repos:在Github其他用户下的repos, 需要写出“用户名/repos名”
+" 3. non-GitHub repos:不在Github上的插件，需要写出git全路径"
+" Git repos on your local machine (i.e. when working on your own plugin)
+" ...
+" My bundles here:
+" 1. original repos on  GitHub
+Bundle 'Emmet.vim'
+Bundle 'The-NERD-Commenter'
+Bundle 'The-NERD-tree'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'bufexplorer.zip'
+Bundle 'fcitx.vim'
+Bundle 'plasticboy/vim-markdown'
+Bundle 'snipMate'
+Bundle 'tpope/vim-surround'
+"Bundle 'vimcdoc'
+Bundle 'kien/ctrlp.vim'
+Bundle 'tacahiroy/ctrlp-funky'
+Bundle 'mileszs/ack.vim'
+Bundle 'Lokaltog/vim-easymotion'
+Bundle 'bling/vim-airline'
+"Bundle 'bling/vim-bufferline'
+Bundle 'godlygeek/tabular'
+Bundle 'Yggdroot/indentLine'
+Bundle 'tmhedberg/SimpylFold'
+Bundle 'vim-scripts/VOoM'
+"Bundle 'Valloric/YouCompleteMe'
+"Bundle 'kshenoy/vim-signature'
+Bundle 'dracula/vim'
+Bundle 'molokai'
+"Bundle 'vim-pandoc/vim-pandoc'
+"Bundle 'vim-pandoc/vim-pandoc-syntax'
+Bundle 'tpope/vim-cucumber'
+"Bundle 'ludovicchabant/vim-gutentags'
+Bundle 'ludovicchabant/vim-lawrencium'
+
+"Bundle 'klen/python-mode'
+"Bundle 'minibufexpl.vim'
+"Bundle 'calendar.vim'
+"Bundle 'vimwiki'
+"Bundle 'OutlookVim'
+"Bundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
+"Bundle 'nathanaelkane/vim-indent-guides'
+
+" All of your Plugins must be added before the following line
+call vundle#end(path)            " required
+filetype plugin indent on     " required!
+
+" ===== Configuration of plugins =====
+" 42 bufexplorer 
+"'\be' (normal open)  or
+"'\bs' (force horizontal split open)  or
+"'\bv' (force vertical split open)
+
+" 159 minibufexpl
+"let g:miniBufExplMapWindowNavVim=1              "Ctrl-<hjkl> to move to window
+"let g:miniBufExplMapWindowNavArrows=1
+"let g:miniBufExplMapCTabSwitchBufs=1            "可用<C-TAB>和<C-S-TAB>在buffer间切换
+"let g:miniBufExplModSelTarget=1
+"let g:miniBufExplSplitBelow=0  " Put new window above
+
+"" MiniBufExpl Colors
+"hi MBENormal               guifg=#808080 guibg=fg
+"hi MBEChanged              guifg=#CD5907 guibg=fg
+"hi MBEVisibleNormal        guifg=#5DC2D6 guibg=fg
+"hi MBEVisibleChanged       guifg=#F1266F guibg=fg
+"hi MBEVisibleActiveNormal  guifg=#A6DB29 guibg=fg
+"hi MBEVisibleActiveChanged guifg=#F1266F guibg=fg
+
+" NERD Commenter
+"[count]<leader>cc |NERDComComment|             "Comment out the current line or text selected in visual mode.
+"[count]<leader>cu |NERDComUncommentLine|       "Uncomments the selected line(s).
+
+" snipmate
+" 快速输入代码片段，比如在C#文件(.cs)中输入‘for<Tab>'将自动生成如下代码段
+"for (i = 0; i < count; i++)
+  "/* code */
+
+" 2657 VOoM
+map <F11> :Voom<CR>
+
+" 2981 Emmet
+" Zencoding-vim
+" Tutorial: http://github.com/mattn/emmet-vim/raw/master/TUTORIAL
+
+" 3764 fcitx
+"在离开或重新进入插入模式时自动记录和恢复每个缓冲区各自的输入法状态，
+"以便在普通模式下始终是英文输入模式，
+"切换回插入模式时恢复离开前的输入法输入模式。
+
+" Vim-markdown
+" disable auto-folding
+let g:vim_markdown_folding_disabled=1
+
+" ctrlp
+" <C-P>
+
+" ctrlp-funky
+nnoremap <leader>fu :CtrlPFunky<CR>
+" narrow the list down with a word under cursor
+nnoremap <leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<CR>=
+
+" Easymotion
+let g:EasyMotion_leader_key = '<Leader><Leader>'
+"let g:EasyMotion_leader_key = '\'
+"let g:EasyMotion_leader_key = 'f'
+
+" vim-airline
+let g:airline_section_b = '%t'
+let g:airline_section_c = '[%P]'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline_section_c = '%<%F%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
+"let g:airline_section_c = '[%{getcwd()}]'
+"let g:airline#extensions#tabline#enabled = 1
+
+" indent guides
+" This one is replaced by indent Line: Bundle 'Yggdroot/indentLine'
+"let g:indent_guides_auto_colors = 0
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=4
+"let g:indent_guides_start_level = 2
+"let g:indent_guides_guide_size = 1
+
+" indent Line
+" Vim
+let g:indentLine_color_term = 239
+"GVim
+let g:indentLine_color_gui = '#A4E57E'
+" none X terminal
+let g:indentLine_color_tty_light = 7 " (default: 4)
+let g:indentLine_color_dark = 1 " (default: 2)
+
+" Ack
+"let g:ackprg = 'ag --nogroup --nocolor --colum'
+"使用ack的空白搜索，即不添加任何参数时对光标下的单词进行搜索，默认值为1，表示开启，置0以后使用空白搜索将返回错误信息
+let g:ack_use_cword_for_empty_search = 1
+"nmap <leader><leader>a :Ack<space><CR>
+nmap <leader>a :Ack<space><CR>
+    
+set autochdir
+nnoremap <leader>n :NERDTreeToggle<CR>
+" }}}1
+
+" ############################################################ 
+" Vim UI : _gui
+"   Color setting : _gui_color
+"   Font setting : _gui_font
+"   Menu setting : _gui_menu
+"   Command line and Status line : _gui_statusLine
+"   Misc GUI settings : _gui_misc
+" ############################################################ 
+" Vim UI {{{1
+" Color setting : _gui_color
+" Allow to trigger background
+function! ToggleBG()
+	let s:tbg = &background
+	" Inversion
+	if s:tbg == "dark"
+		set background=light
+	else
+		set background=dark
+	endif
+endfunction
+noremap <leader>bg :call ToggleBG()<CR>
+" Color scheme
+"set background=dark         " Assume a dark background
+"set background=light         " Assume a dark background
+"colorscheme solarized
+colorscheme desert
+"colorscheme dracula
+"colorscheme molokai
+"let g:solarized_termcolors=256
+"let g:solarized_termtrans=1
+"let g:solarized_contrast="normal"
+"let g:solarized_visibility="normal"
+
+
+" Font setting : _gui_font
+" Fonts list:
+"Inconsolata
+"Andale Mono
+"Menlo
+"Consolas
+"Courier New
+" The syntax of Font name in different platform
+" LINUX: Inconsolata\ 16. It uses "\ " for space
+" OSX: Inconsolata:h16. It uses "\ " for space and "hnn" for font size
+" WINDOWS: Inconsolata:h16. It uses "_" for space and "hnn" for font size
+if has('gui_running')
+	set lines=40                " 40 lines of text instead of 24
+	if LINUX() && has("gui_running")
+		set guifont=Inconsolata\ 16, Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
+		set guifontwide=YouYuan\ 14         " Font of Chinese
+	elseif OSX() && has("gui_running")
+		set guifont=Inconsolata:h16, Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
+		set guifontwide=YouYuan:h14         " Font of Chinese
+	elseif WINDOWS() && has("gui_running")
+		"set guifont=Consolas:h14
+		"set guifont=Lucida_Sans_Unicode:h14
+		"set guifont=Monaco:h12
+		"set guifont=DejaVu_Sans:h14
+		"set guifont=Inconsolata:h14,Andale_Mono:h14,Menlo:h14,Consolas:h14,Courier_New:h14
+		set guifont=Courier_New:h14
+		set guifontwide=FangSong:h14:cANSI
+	endif
+else
+	if &term == 'xterm' || &term == 'screen'
+		set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
+	endif
+	"set term=builtin_ansi       " Make arrow and other keys work
+endif
+
+
+" Menu setting : _gui_menu
+	"解决菜单乱码
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+set guioptions-=b           "关闭下方和右边的滚动条
+set guioptions-=r
+set guioptions-=m           "关闭菜单和工具栏
+set guioptions-=T
+
+
+" Command line and Status line : _gui_statusLine
+if has('cmdline_info')
+	set ruler                   " Show the ruler
+	set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
+	set showcmd                 " Show partial commands in status line and selected characters/lines in visual mode
+endif
+
+if has('statusline')
+	set laststatus=2
+	" The commandbar is 2 high
+	set cmdheight=2
+
+	" Broken down into easily includeable segments
+	set statusline=%<%f\                     " Filename
+	set statusline+=%w%h%m%r                 " Options
+	if !exists('g:override_spf13_bundles')
+		"set statusline+=%{fugitive#statusline()} " Git Hotness
+	endif
+	set statusline+=\ [%{&ff}/%Y]            " Filetype
+	set statusline+=\ [%{getcwd()}]          " Current dir
+endif
+
+	
+" Misc GUI settings : _gui_misc
+set showmode                    " Display the current mode
+set cursorline                  " Highlight current line
+
+highlight clear SignColumn      " SignColumn should match background
+highlight clear LineNr          " Current line number row will have same background color in relative mode
+"highlight clear CursorLineNr    " Remove highlight color from current line number
+
+set backspace=indent,eol,start  " Backspace for dummies
+set linespace=0                 " No extra spaces between rows
+set number                      " Line numbers on
+set showmatch                   " Show matching brackets/parenthesis
+set incsearch                   " Find as you type search
+set hlsearch                    " Highlight search terms
+set winminheight=0              " Windows can be 0 line high
+set ignorecase                  " Case insensitive search
+set smartcase                   " Case sensitive when uc present
+set wildmenu                    " Show list instead of just completing
+set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
+set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
+set scrolljump=5                " Lines to scroll when cursor leaves screen
+set scrolloff=3                 " Minimum lines to keep above and below cursor
+set foldenable                  " Auto fold code
+set linebreak                   "不在单词中间断行。设置了这个选项后，如果一行文字非常长，无法在一行内显示完的话，它会在单词与单词间的空白处断开，尽量不会把一个单词分成两截放在两个不同的行里。
+"set list
+"set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
+"set textwidth=0
+" For all text files set 'textwidth' to 78 characters.
+"autocmd FileType text setlocal textwidth=78
+set foldmethod=marker
+" }}}1
+
+" ############################################################ 
+" Formatting : _fmt
+" ############################################################ 
+" Formatting {{{1
+"set nowrap                      " Do not wrap long lines
+"set wrap                      " Do not wrap long lines
+set autoindent                  " Indent at the same level of the previous line
+set shiftwidth=4                " Use indents of 4 spaces
+"set expandtab                   " Tabs are spaces, not tabs
+set smarttab                    "当使用 et 将 Tab 替换为空格之后，按下一个 Tab 键就能插入 4 个空格，但要想删除这 4 个空格，就得按 4 下 Backspace，很不方便。设置 smarttab 之后，就可以只按一下 Backspace 就删除 4 个空格了。
+set tabstop=4                   " An indentation every four columns
+set softtabstop=4               " Let backspace delete indent
+set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
+set splitright                  " Puts new vsplit windows to the right of the current
+set splitbelow                  " Puts new split windows to the bottom of the current
+set so=7                        " Set 7 lines to the curors - when moving vertical
+"set matchpairs+=<:>             " Match, to be used with %
+set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
+set colorcolumn=81              " codes per line should less than 80
+"set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
+" Remove trailing whitespaces and ^M chars
+" To disable the stripping of whitespace, add the following to your
+" .vimrc.before.local file:
+"   let g:spf13_keep_trailing_whitespace = 1
+"autocmd FileType java,php,javascript,python,xml,yml,perl,sql
+	"\ autocmd BufWritePre <buffer>
+	"\ if !exists('g:spf13_keep_trailing_whitespace')
+	"\    call StripTrailingWhitespace()
+	"\ endif
+"autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
+" preceding line best in a plugin but here for now.
+"au BufNewFile,BufRead *.py
+	"\ set tabstop=4
+	"\ set softtabstop=4
+	"\ set shiftwidth=4
+	"\ set textwidth=79
+	"\ set expandtab
+	"\ set autoindent
+	"\ set fileformat=unix
+
+au BufNewFile,BufRead *.js, *.html, *.css
+	\ set tabstop=2
+	\ set softtabstop=2
+	\ set shiftwidth=2
+" }}}1
+
+" ---EOF---
