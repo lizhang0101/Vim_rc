@@ -1,7 +1,11 @@
-" TODO:
+" ############################################################ 
+" TODO
+" To-do list: {{{1
 " 增加quickfix的key binding
 " 增加切换buffer的key binding
-" 如何进行版本控制？
+" }}}1
+" ############################################################ 
+"
 " ############################################################ 
 " Environment: _env
 " General: _gen
@@ -192,13 +196,13 @@ if LINUX()
 	" Fast reloading of the .vimrc
 	map <leader>s :source ~/.vimrc<cr>
 	" Fast editing of the .vimrc
-	map <leader>e :e! ~/.vimrc<cr>
+	map <leader>e :e! ~/Vim_rc/_vimrc_sum<cr>
 endif
 if WINDOWS()
 	" Fast reloading of the .vimrc
 	map <leader>s :source $VIM/_vimrc<cr>
 	" Fast editing of the .vimrc
-	map <leader>e :e! $VIM/_vimrc<cr>
+	map <leader>e :e! $VIM/Vim_rc/_vimrc_sum<cr>
 endif
 
 " Easier moving in tabs and windows
@@ -391,7 +395,7 @@ let g:indentLine_color_tty_light = 7 " (default: 4)
 let g:indentLine_color_dark = 1 " (default: 2)
 
 " Ack
-"let g:ackprg = 'ag --nogroup --nocolor --colum'
+let g:ackprg = 'ag --nogroup --nocolor --colum'
 "使用ack的空白搜索，即不添加任何参数时对光标下的单词进行搜索，默认值为1，表示开启，置0以后使用空白搜索将返回错误信息
 let g:ack_use_cword_for_empty_search = 1
 "nmap <leader><leader>a :Ack<space><CR>
