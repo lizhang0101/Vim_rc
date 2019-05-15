@@ -8,19 +8,27 @@
 "
 " ############################################################ 
 " Environment: _env
+"	Identify platform:_env_platform
+" 	Basics: _env_basic
+" 	Windows Compatible: _env_comp
+" 	Arrow Key Fix: _env_keyFix
 " General: _gen
+"	Encoding: _gen_encoding
+" 	File Types: _gen_fileType
+" 	Misc settings: _gen_misc
 " Key (re)Mappings: _mapping
 " Plugin: _plugin
 " VIM GUI: _gui
+"   Color setting : _gui_color
+"   Font setting : _gui_font
+"   Menu setting : _gui_menu
+"   Command line and Status line : _gui_statusLine
+"   Misc GUI settings : _gui_misc
 " Formatting: _fmt
 " ############################################################ 
 
 " ############################################################ 
 " ENVIRONMENT:_env
-"	Identify platform:_env_platform
-" 	Basics: _env_basic
-" 	Windows Compatible: _env_comp
-" 	Arrow Key Fix: _env_keyFix
 " ############################################################ 
 " ENVIRONMENT {{{1
 " Identify platform _env_platform
@@ -75,9 +83,6 @@ endif
 
 " ############################################################ 
 " General: _gen
-"	Encoding: _gen_encoding
-" 	File Types: _gen_fileType
-" 	Misc settings: _gen_misc
 " ############################################################ 
 " General {{{1
 " Encoding: _gen_encoding
@@ -242,72 +247,70 @@ endif
 " Simplenote
 " let g:SimplenoteUsername = "lizhang0101@gmail.com"
 " let g:SimplenotePassword = ""
-set nocompatible              " be iMproved
-filetype off                  " required!
 
-if WINDOWS()
-    set rtp+=$VIM/bundle/Vundle.vim/
-    let path='$VIM/bundle'
-elseif LINUX()
-    set rtp+=~/.vim/bundle/Vundle.vim/
-    let path="~/.vim/bundle"
-endif
+" Legacy configuration of Vundle {{{2
+"set nocompatible              " be iMproved
+"filetype off                  " required!
 
-call vundle#begin(path)
+"if WINDOWS()
+    "set rtp+=$VIM/bundle/Vundle.vim/
+    "let path='$VIM/bundle'
+"elseif LINUX()
+    "set rtp+=~/.vim/bundle/Vundle.vim/
+    "let path="~/.vim/bundle"
+"endif
 
-" let Vundle manage Vundle
-" required!
-Bundle 'gmarik/Vundle.vim'
+"call vundle#begin(path)
 
-" ===== List of plugins =====
-" 1. original repos on GitHub:在Github vim-scripts 用户下的repos,只需要写出repos名称
-" 2. vim-scripts repos:在Github其他用户下的repos, 需要写出“用户名/repos名”
-" 3. non-GitHub repos:不在Github上的插件，需要写出git全路径"
-" Git repos on your local machine (i.e. when working on your own plugin)
-" ...
-" My bundles here:
-" 1. original repos on  GitHub
-Bundle 'Emmet.vim'
-Bundle 'The-NERD-Commenter'
-Bundle 'The-NERD-tree'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'bufexplorer.zip'
-Bundle 'fcitx.vim'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'snipMate'
-Bundle 'tpope/vim-surround'
-"Bundle 'vimcdoc'
-Bundle 'kien/ctrlp.vim'
-Bundle 'tacahiroy/ctrlp-funky'
-Bundle 'mileszs/ack.vim'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'bling/vim-airline'
-"Bundle 'bling/vim-bufferline'
-Bundle 'godlygeek/tabular'
-Bundle 'Yggdroot/indentLine'
-Bundle 'tmhedberg/SimpylFold'
-Bundle 'vim-scripts/VOoM'
-"Bundle 'Valloric/YouCompleteMe'
-"Bundle 'kshenoy/vim-signature'
-Bundle 'dracula/vim'
-Bundle 'molokai'
-"Bundle 'vim-pandoc/vim-pandoc'
-"Bundle 'vim-pandoc/vim-pandoc-syntax'
-Bundle 'tpope/vim-cucumber'
-"Bundle 'ludovicchabant/vim-gutentags'
-Bundle 'ludovicchabant/vim-lawrencium'
+"" let Vundle manage Vundle
+"" required!
+"Bundle 'gmarik/Vundle.vim'
+" }}}2
 
-"Bundle 'klen/python-mode'
-"Bundle 'minibufexpl.vim'
-"Bundle 'calendar.vim'
-"Bundle 'vimwiki'
-"Bundle 'OutlookVim'
-"Bundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
-"Bundle 'nathanaelkane/vim-indent-guides'
+" Specify a directory for plugins
+" - For Neovim: ~/.local/share/nvim/plugged
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
 
+" Make sure you use single quotes
+Plug 'mattn/emmet-vim'
+Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdtree'
+Plug 'altercation/vim-colors-solarized'
+Plug 'jlanzarotta/bufexplorer'
+"Plug 'fcitx.vim'
+Plug 'plasticboy/vim-markdown'
+Plug 'tpope/vim-surround'
+Plug 'kien/ctrlp.vim'
+Plug 'tacahiroy/ctrlp-funky'
+Plug 'mileszs/ack.vim'
+Plug 'Lokaltog/vim-easymotion'
+"Plug 'bling/vim-airline'
+Plug 'godlygeek/tabular'
+Plug 'Yggdroot/indentLine'
+Plug 'tmhedberg/SimpylFold'
+Plug 'vim-scripts/VOoM'
+"Plug 'Valloric/YouCompleteMe'
+Plug 'dracula/vim'
+Plug 'sickill/vim-monokai'
+"Plug 'vim-pandoc/vim-pandoc'
+"Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'tpope/vim-cucumber'
+"Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-lawrencium'
+Plug 'itchyny/lightline.vim'
+
+"Plug 'klen/python-mode'
+"Plug 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
+"Plug 'nathanaelkane/vim-indent-guides'
+
+" Legacy configuration of Vundle {{{2
 " All of your Plugins must be added before the following line
-call vundle#end(path)            " required
-filetype plugin indent on     " required!
+"call vundle#end(path)            " required
+"filetype plugin indent on     " required!
+" }}}2
+
+call plug#end()
 
 " ===== Configuration of plugins =====
 " 42 bufexplorer 
@@ -407,11 +410,6 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 
 " ############################################################ 
 " Vim UI : _gui
-"   Color setting : _gui_color
-"   Font setting : _gui_font
-"   Menu setting : _gui_menu
-"   Command line and Status line : _gui_statusLine
-"   Misc GUI settings : _gui_misc
 " ############################################################ 
 " Vim UI {{{1
 " Color setting : _gui_color
