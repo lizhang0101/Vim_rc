@@ -1,35 +1,38 @@
-" ############################################################ 
 " TODO
 " To-do list: {{{1
 " 增加quickfix的key binding
 " 增加切换buffer的key binding
 " }}}1
-" ############################################################ 
-"
-" ############################################################ 
-" Environment: _env
-"	Identify platform:_env_platform
-" 	Basics: _env_basic
-" 	Windows Compatible: _env_comp
-" 	Arrow Key Fix: _env_keyFix
-" General: _gen
-"	Encoding: _gen_encoding
-" 	File Types: _gen_fileType
-" 	Misc settings: _gen_misc
-" Key (re)Mappings: _mapping
-" Plugin: _plugin
-" VIM GUI: _gui
-"   Color setting : _gui_color
-"   Font setting : _gui_font
-"   Menu setting : _gui_menu
-"   Command line and Status line : _gui_statusLine
-"   Misc GUI settings : _gui_misc
-" Formatting: _fmt
-" ############################################################ 
+" ----------------------------------------------------------------------------
 
-" ############################################################ 
+" TOC {{{1
+" Environment                    : _env
+"	Identify platform            : _env_platform
+" 	Basics                       : _env_basic
+" 	Windows Compatible           : _env_comp
+" 	Arrow Key Fix                : _env_keyFix
+
+" General                        : _gen
+"	Encoding                     : _gen_encoding
+" 	File Types                   : _gen_fileType
+" 	Misc settings                : _gen_misc
+
+" Key (re)Mappings               : _mapping
+
+" Plugin                         : _plugin
+
+" VIM GUI                        : _gui
+"   Color setting                : _gui_color
+"   Font setting                 : _gui_font
+"   Menu setting                 : _gui_menu
+"   Command line and Status line : _gui_statusLine
+"   Misc GUI settings            : _gui_misc
+
+" Formatting                     : _fmt
+" }}}1
+" ----------------------------------------------------------------------------
+
 " ENVIRONMENT:_env
-" ############################################################ 
 " ENVIRONMENT {{{1
 " Identify platform _env_platform
 silent function! OSX()
@@ -80,10 +83,9 @@ if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
     inoremap <silent> <C-[>OC <RIGHT>
 endif
 " }}}1
+" ----------------------------------------------------------------------------
 
-" ############################################################ 
 " General: _gen
-" ############################################################ 
 " General {{{1
 " Encoding: _gen_encoding
 	set encoding=utf-8
@@ -179,10 +181,9 @@ iabbrev @@ lizhang0101@gmail.com
 			\ ]
 	endif
 " }}}1
+" ----------------------------------------------------------------------------
 
-" ############################################################ 
 " Key (re)Mappings : _mapping
-" ############################################################ 
 " Key (re)Mappings {{{1
 let mapleader = ','
 
@@ -239,10 +240,9 @@ else
 	nmap <silent> <leader>/ :set invhlsearch<CR>
 endif
 " }}}1
+" ----------------------------------------------------------------------------
 
-" ############################################################ 
 " Plugin: _plugin
-" ############################################################ 
 " Plugin {{{1
 " Simplenote
 " let g:SimplenoteUsername = "lizhang0101@gmail.com"
@@ -277,15 +277,17 @@ Plug 'mattn/emmet-vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'altercation/vim-colors-solarized'
-Plug 'jlanzarotta/bufexplorer'
+"Plug 'jlanzarotta/bufexplorer'
 "Plug 'fcitx.vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'tpope/vim-surround'
 Plug 'kien/ctrlp.vim'
 Plug 'tacahiroy/ctrlp-funky'
 Plug 'mileszs/ack.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } 
+Plug 'junegunn/fzf.vim'
 Plug 'Lokaltog/vim-easymotion'
-"Plug 'bling/vim-airline'
+Plug 'bling/vim-airline'
 Plug 'godlygeek/tabular'
 Plug 'Yggdroot/indentLine'
 Plug 'tmhedberg/SimpylFold'
@@ -293,15 +295,11 @@ Plug 'vim-scripts/VOoM'
 "Plug 'Valloric/YouCompleteMe'
 Plug 'dracula/vim'
 Plug 'sickill/vim-monokai'
-"Plug 'vim-pandoc/vim-pandoc'
-"Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'tpope/vim-cucumber'
 "Plug 'ludovicchabant/vim-gutentags'
 Plug 'ludovicchabant/vim-lawrencium'
-Plug 'itchyny/lightline.vim'
+"Plug 'itchyny/lightline.vim'
 
-"Plug 'klen/python-mode'
-"Plug 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
 "Plug 'nathanaelkane/vim-indent-guides'
 
 " Legacy configuration of Vundle {{{2
@@ -317,21 +315,6 @@ call plug#end()
 "'\be' (normal open)  or
 "'\bs' (force horizontal split open)  or
 "'\bv' (force vertical split open)
-
-" 159 minibufexpl
-"let g:miniBufExplMapWindowNavVim=1              "Ctrl-<hjkl> to move to window
-"let g:miniBufExplMapWindowNavArrows=1
-"let g:miniBufExplMapCTabSwitchBufs=1            "可用<C-TAB>和<C-S-TAB>在buffer间切换
-"let g:miniBufExplModSelTarget=1
-"let g:miniBufExplSplitBelow=0  " Put new window above
-
-"" MiniBufExpl Colors
-"hi MBENormal               guifg=#808080 guibg=fg
-"hi MBEChanged              guifg=#CD5907 guibg=fg
-"hi MBEVisibleNormal        guifg=#5DC2D6 guibg=fg
-"hi MBEVisibleChanged       guifg=#F1266F guibg=fg
-"hi MBEVisibleActiveNormal  guifg=#A6DB29 guibg=fg
-"hi MBEVisibleActiveChanged guifg=#F1266F guibg=fg
 
 " NERD Commenter
 "[count]<leader>cc |NERDComComment|             "Comment out the current line or text selected in visual mode.
@@ -406,11 +389,12 @@ nmap <leader>a :Ack<space><CR>
     
 set autochdir
 nnoremap <leader>n :NERDTreeToggle<CR>
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
 " }}}1
+" ----------------------------------------------------------------------------
 
-" ############################################################ 
 " Vim UI : _gui
-" ############################################################ 
 " Vim UI {{{1
 " Color setting : _gui_color
 " Allow to trigger background
@@ -537,10 +521,9 @@ set linebreak                   "不在单词中间断行。设置了这个选�
 "autocmd FileType text setlocal textwidth=78
 set foldmethod=marker
 " }}}1
+" ----------------------------------------------------------------------------
 
-" ############################################################ 
 " Formatting : _fmt
-" ############################################################ 
 " Formatting {{{1
 "set nowrap                      " Do not wrap long lines
 "set wrap                      " Do not wrap long lines
@@ -583,5 +566,6 @@ au BufNewFile,BufRead *.js, *.html, *.css
 	\ set softtabstop=2
 	\ set shiftwidth=2
 " }}}1
+" ----------------------------------------------------------------------------
 
 " ---EOF---
