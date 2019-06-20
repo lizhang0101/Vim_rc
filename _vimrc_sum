@@ -190,7 +190,7 @@ let mapleader = ','
 " Learn Vimscript in the hard way
 inoremap <C-u> <esc>viwUi
 inoremap jk <esc>
-inoremap <esc> <nop>
+"inoremap <esc> <nop>
 
 "  Common
 " Fast saving
@@ -248,60 +248,58 @@ endif
 " Specify a directory for plugins
 " - For Neovim: ~/.local/share/nvim/plugged
 " - Avoid using standard Vim directory names like 'plugin'
+" Make sure you use single quotes
 call plug#begin('~/.vim/plugged')
 
-" Make sure you use single quotes
-Plug 'mattn/emmet-vim'
-Plug 'scrooloose/nerdcommenter'
+" Navigation/outline plugins
 Plug 'scrooloose/nerdtree'
-Plug 'altercation/vim-colors-solarized'
-"Plug 'jlanzarotta/bufexplorer'
-"Plug 'fcitx.vim'
-Plug 'plasticboy/vim-markdown'
-Plug 'tpope/vim-surround'
+Plug 'jlanzarotta/bufexplorer'
+Plug 'vim-scripts/VOoM'
+Plug 'tmhedberg/SimpylFold'
+
+" Searching plugins
 Plug 'mileszs/ack.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } 
 Plug 'junegunn/fzf.vim'
 Plug 'Lokaltog/vim-easymotion'
-Plug 'bling/vim-airline'
+
+" Editing/formatting plugins
+Plug 'tpope/vim-surround'
 Plug 'godlygeek/tabular'
+Plug 'scrooloose/nerdcommenter'
+Plug 'plasticboy/vim-markdown'
+
+" Programming plugins
 Plug 'Yggdroot/indentLine'
-Plug 'tmhedberg/SimpylFold'
-Plug 'vim-scripts/VOoM'
-"Plug 'Valloric/YouCompleteMe'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'majutsushi/tagbar'
+Plug 'tpope/vim-cucumber'
+Plug 'ludovicchabant/vim-lawrencium'
+
+" Color schema/display plugins
 Plug 'dracula/vim'
 Plug 'sickill/vim-monokai'
-Plug 'tpope/vim-cucumber'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'ludovicchabant/vim-lawrencium'
-"Plug 'itchyny/lightline.vim'
-Plug 'majutsushi/tagbar'
+Plug 'altercation/vim-colors-solarized'
+Plug 'bling/vim-airline'
 
-"Plug 'nathanaelkane/vim-indent-guides'
+" Deprecated plugins
+"Plug 'Valloric/YouCompleteMe'
+"Plug 'fcitx.vim'
+"Plug 'mattn/emmet-vim'
 
 call plug#end()
 
 " ===== Configuration of plugins =====
-" 42 bufexplorer 
+
+" bufexplorer {{{2
 "'\be' (normal open)  or
 "'\bs' (force horizontal split open)  or
 "'\bv' (force vertical split open)
+" }}}2
 
-" NERD Commenter
-"[count]<leader>cc |NERDComComment|             "Comment out the current line or text selected in visual mode.
-"[count]<leader>cu |NERDComUncommentLine|       "Uncomments the selected line(s).
-
-" snipmate
-" 快速输入代码片段，比如在C#文件(.cs)中输入‘for<Tab>'将自动生成如下代码段
-"for (i = 0; i < count; i++)
-  "/* code */
-
-" 2657 VOoM
+" VOoM {{{2
 map <F11> :Voom<CR>
-
-" 2981 Emmet
-" Zencoding-vim
-" Tutorial: http://github.com/mattn/emmet-vim/raw/master/TUTORIAL
+" }}}2
 
 " 3764 fcitx
 "在离开或重新进入插入模式时自动记录和恢复每个缓冲区各自的输入法状态，
@@ -312,7 +310,7 @@ map <F11> :Voom<CR>
 " disable auto-folding
 let g:vim_markdown_folding_disabled=1
 
-" FZF
+" FZF {{{2
 "nmap <C-p> :Files<CR>
 nmap <C-p> :call CallFZF()<CR>
 
@@ -320,53 +318,57 @@ function! CallFZF()
 	cd ~/csz/
 	Files
 endfunction
+" }}}2
 
-" Easymotion
+" Easymotion {{{2
 let g:EasyMotion_leader_key = '<Leader><Leader>'
 "let g:EasyMotion_leader_key = '\'
 "let g:EasyMotion_leader_key = 'f'
+" }}}2
 
-" vim-airline
+" vim-airline {{{2
 let g:airline_section_b = '%t'
 let g:airline_section_c = '[%P]'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline_section_c = '%<%F%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
 "let g:airline_section_c = '[%{getcwd()}]'
-"let g:airline#extensions#tabline#enabled = 1
+" }}}2
 
-" indent guides
-" This one is replaced by indent Line: Bundle 'Yggdroot/indentLine'
-"let g:indent_guides_auto_colors = 0
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=4
-"let g:indent_guides_start_level = 2
-"let g:indent_guides_guide_size = 1
-
-" indent Line
+" indent Line {{{2
 " Vim
 let g:indentLine_color_term = 239
-"GVim
+" GVim
 let g:indentLine_color_gui = '#A4E57E'
 " none X terminal
 let g:indentLine_color_tty_light = 7 " (default: 4)
 let g:indentLine_color_dark = 1 " (default: 2)
+" }}}2
 
-" Ack
+" Ack {{{2
 let g:ackprg = 'ag --nogroup --nocolor --colum'
-"使用ack的空白搜索，即不添加任何参数时对光标下的单词进行搜索，默认值为1，表示开启，置0以后使用空白搜索将返回错误信息
+" 使用ack的空白搜索，即不添加任何参数时对光标下的单词进行搜索，
+" 默认值为1，表示开启，置0以后使用空白搜索将返回错误信息
 let g:ack_use_cword_for_empty_search = 1
 "nmap <leader><leader>a :Ack<space><CR>
 nmap <leader>a :Ack<space><CR>
+" }}}2
     
+" NERDTree {{{2
 set autochdir
 nnoremap <leader>n :NERDTreeToggle<CR>
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
+" }}}2
 
+" NERD Commenter {{{2
+"[count]<leader>cc |NERDComComment|             "Comment out the current line or text selected in visual mode.
+"[count]<leader>cu |NERDComUncommentLine|       "Uncomments the selected line(s).
+" }}}2
+
+" gutentags {{{2
 " gutentags搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归 "
-"let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
-let g:gutentags_project_root = ['.']
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
 
 " 所生成的数据文件的名称
 let g:gutentags_ctags_tagfile = '.tags'
@@ -392,10 +394,13 @@ let g:gutentags_ctags_extra_args = ['--options=/users/leozha/.ctags', '--languag
 
 " 如果使用 universal ctags 需要增加下面一行
 let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
+" }}}2
+
 set tags=tags
 set tags+=~/.ctags.d/tags
 set tags+=~/.cache/users-leozha-L10N-carmusr-crc-modules-.tags
 
+" tagbar {{{2
 nmap <silent> <F9> :TagbarToggle<CR>
 let g:tagbar_ctags_bin = '~/usr/ctags/bin/ctags'
 let g:tagbar_left = 1
@@ -406,17 +411,20 @@ let g:tagbar_type_rave = {
     \ 'deffile' : '/users/leozha/.ctags', 
     \ 'ctagstype' : 'rave', 
     \ 'kinds'  : [ 
-     \ 'r:rules', 
      \ 'g:groups', 
+     \ 'r:rules', 
      \ 'v:variables', 
      \ 'm:modules', 
      \ 't:tables' 
     \ ] 
 \ } 
+" }}}2
 
-" Simplenote
+" Simplenote {{{2
 " let g:SimplenoteUsername = "lizhang0101@gmail.com"
 " let g:SimplenotePassword = ""
+" }}}2
+
 " }}}1
 " ----------------------------------------------------------------------------
 
