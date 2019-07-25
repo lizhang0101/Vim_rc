@@ -76,12 +76,6 @@ endif
 "if LINUX() && filereadable(expand("~/.vimrc.bundles"))
     "source ~/.vimrc.bundles
 "endif
-
-" Arrow Key Fix : _env_keyFix
-" https://github.com/spf13/spf13-vim/issues/780
-if &term[:4] == "xterm" || &term[:5] == 'screen' || &term[:3] == 'rxvt'
-    inoremap <silent> <C-[>OC <RIGHT>
-endif
 " }}}1
 " ----------------------------------------------------------------------------
 
@@ -233,12 +227,11 @@ nnoremap Y y$
 " Most prefer to toggle search highlighting rather than clear the current
 " search results. To clear search highlighting rather than toggle it on
 " and off, add the following to your .vimrc.before.local file:
-let g:spf13_clear_search_highlight = 1
-if exists('g:spf13_clear_search_highlight')
-	nmap <silent> <leader>/ :nohlsearch<CR>
-else
-	nmap <silent> <leader>/ :set invhlsearch<CR>
-endif
+nmap <silent> <leader>/ :set invhlsearch<CR>
+
+" Switch to buffers
+nnoremap <leader>bn :bn<CR>
+nnoremap <leader>bp :bp<CR>
 " }}}1
 " ----------------------------------------------------------------------------
 
@@ -331,6 +324,7 @@ let g:airline_section_b = '%t'
 let g:airline_section_c = '[%P]'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline_section_c = '%<%F%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
 "let g:airline_section_c = '[%{getcwd()}]'
 " }}}2
@@ -394,11 +388,11 @@ let g:gutentags_ctags_extra_args = ['--options=/users/leozha/.ctags', '--languag
 
 " 如果使用 universal ctags 需要增加下面一行
 let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
-" }}}2
 
-set tags=tags
-set tags+=~/.ctags.d/tags
-set tags+=~/.cache/users-leozha-L10N-carmusr-crc-modules-.tags
+" Key binding
+noremap <leader>gt <C-]>
+noremap <leader>go <C-o>
+" }}}2
 
 " tagbar {{{2
 nmap <silent> <F9> :TagbarToggle<CR>
