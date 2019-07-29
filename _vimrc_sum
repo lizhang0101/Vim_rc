@@ -1,7 +1,6 @@
 " TODO
 " To-do list: {{{1
 " 增加quickfix的key binding
-" 增加切换buffer的key binding
 " }}}1
 " ----------------------------------------------------------------------------
 
@@ -36,62 +35,52 @@
 " ENVIRONMENT {{{1
 " Identify platform _env_platform
 silent function! OSX()
-    return has('macunix')
+return has('macunix')
 endfunction
 silent function! LINUX()
-    "return has('unix') && !has('macunix') && !has('win32unix')
-    return (has('unix') && !has('macunix')) || has('win32unix')
+return (has('unix') && !has('macunix')) || has('win32unix')
 endfunction
 silent function! WINDOWS()
-    return  (has('win32') || has('win64'))
+return  (has('win32') || has('win64'))
 endfunction
 
 " Basics : _env_basic
 " This must be first, because it changes other options as a side effect.
 set nocompatible        " Must be first line
 if !WINDOWS()
-    set shell=/bin/sh
+	set shell=/bin/sh
 endif
 
 " Windows Compatible : _env_comp
 " in windows, $VIM=C:/Program Files (x86)/Vim, $VIMRUNTIME=C:/Program Files (x86)/Vim/vim74
 if WINDOWS()
-  set runtimepath=$VIM,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$VIM/bundle/Vundle.vim
-  "source $VIMRUNTIME/vimrc_example.vim
-  source $VIMRUNTIME/mswin.vim
-  "set viminfo=$VIM/_viminfo
+	set runtimepath=$VIM,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$VIM/bundle/Vundle.vim
+	"source $VIMRUNTIME/vimrc_example.vim
+	source $VIMRUNTIME/mswin.vim
+	"set viminfo=$VIM/_viminfo
 endif
-" use bundles config
-"if WINDOWS() && filereadable(expand("$VIM/.vimrc.bundles"))
-    "source $VIM\.vimrc.bundles
-"endif
 
 " Linux Compatible
 if LINUX()
-  set runtimepath=$HOME/.vim,$HOME/.vim/after,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after
-  source $VIMRUNTIME/vimrc_example.vim
-  source $VIMRUNTIME/mswin.vim
+	set runtimepath=$HOME/.vim,$HOME/.vim/after,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after
+	source $VIMRUNTIME/vimrc_example.vim
+	source $VIMRUNTIME/mswin.vim
 endif
-" use bundles config
-"if LINUX() && filereadable(expand("~/.vimrc.bundles"))
-    "source ~/.vimrc.bundles
-"endif
 " }}}1
 " ----------------------------------------------------------------------------
 
 " General: _gen
 " General {{{1
 " Encoding: _gen_encoding
-	set encoding=utf-8
-	set fileencodings=utf-8,chinese,latin-1
-	"set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
-	"set fencs=utf8,gbk,gb2312,gb18030
-
+set encoding=utf-8
+set fileencodings=utf-8,chinese,latin-1
+"set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
+"set fencs=utf8,gbk,gb2312,gb18030
 
 " File Types: _gen_fileType
-" if !has('gui')
-	"set term=$TERM          " Make arrow and other keys work
-" endif
+if !has('gui')
+	set term=$TERM          " Make arrow and other keys work
+endif
 filetype plugin indent on   " Automatically detect file types.
 syntax on                   " Syntax highlighting
 set mouse=a                 " Automatically enable mouse usage
@@ -109,15 +98,6 @@ if has('clipboard')
 	endif
 endif
 
-" Most prefer to automatically switch to the current file directory when
-" a new buffer is opened; to prevent this behavior, add the following to
-" your .vimrc.before.local file:
-"   let g:spf13_no_autochdir = 1
-if !exists('g:spf13_no_autochdir')
-	autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
-	" Always switch to the current file directory
-endif
-
 " Misc settings: _gen_misc
 "set autowrite                       " Automatically write a file when leaving a modified buffer
 set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
@@ -130,50 +110,12 @@ set iskeyword-=.                    " '.' is an end of word designator
 set iskeyword-=#                    " '#' is an end of word designator
 set iskeyword-=-                    " '-' is an end of word designator
 
-" Instead of reverting the cursor to the last position in the buffer, we
-" set it to the first line when editing a git commit message
-au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 iabbrev @@ lizhang0101@gmail.com
 
-" http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
-" Restore cursor to file position in previous editing session
-" To disable this, add the following to your .vimrc.before.local file:
-"   let g:spf13_no_restore_cursor = 1
-"if !exists('g:spf13_no_restore_cursor')
-	"function! ResCur()
-		"if line("'\"") <= line("$")
-			"silent! normal! g`"
-			"return 1
-		"endif
-	"endfunction
-
-	"augroup resCur
-		"autocmd!
-		"autocmd BufWinEnter * call ResCur()
-	"augroup END
-"endif
-
-" Setting up the directories {2
-	"set backup                  " Backups are nice ...
-	"if has('persistent_undo')
-		"set undofile                " So is persistent undo ...
-		"set undolevels=1000         " Maximum number of changes that can be undone
-		"set undoreload=10000        " Maximum number lines to save for undo on a buffer reload
-	"endif
-	" Turn backup off
-	set nobackup
-	set nowb
-	set noswapfile
-
-	" To disable views add the following to your .vimrc.before.local file:
-	"   let g:spf13_no_views = 1
-	if !exists('g:spf13_no_views')
-		" Add exclusions to mkview and loadview
-		" eg: *.*, svn-commit.tmp
-		let g:skipview_files = [
-			\ '\[example pattern\]'
-			\ ]
-	endif
+" Turn backup off
+set nobackup
+set nowb
+set noswapfile
 " }}}1
 " ----------------------------------------------------------------------------
 
@@ -232,6 +174,9 @@ nmap <silent> <leader>/ :set invhlsearch<CR>
 " Switch to buffers
 nnoremap <leader>bn :bn<CR>
 nnoremap <leader>bp :bp<CR>
+
+" Abbreviations
+nnoremap <leader>dt "=strftime("%d/%m/%y %H:%M:%S")<CR>p
 " }}}1
 " ----------------------------------------------------------------------------
 
@@ -252,7 +197,7 @@ Plug 'tmhedberg/SimpylFold'
 
 " Searching plugins
 Plug 'mileszs/ack.vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } 
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'Lokaltog/vim-easymotion'
 
@@ -348,7 +293,7 @@ let g:ack_use_cword_for_empty_search = 1
 "nmap <leader><leader>a :Ack<space><CR>
 nmap <leader>a :Ack<space><CR>
 " }}}2
-    
+
 " NERDTree {{{2
 set autochdir
 nnoremap <leader>n :NERDTreeToggle<CR>
@@ -371,10 +316,10 @@ let g:gutentags_ctags_tagfile = '.tags'
 " 同时开启 ctags 和 gtags 支持：
 "let g:gutentags_modules = []
 "if executable('ctags')
-	"let g:gutentags_modules += ['ctags']
+"let g:gutentags_modules += ['ctags']
 "endif
 "if executable('gtags-cscope') && executable('gtags')
-	"let g:gutentags_modules += ['gtags_cscope']
+"let g:gutentags_modules += ['gtags_cscope']
 "endif
 
 " 将自动生成的 ctags/gtags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
@@ -402,17 +347,17 @@ let g:tagbar_left = 1
 let g:tagbar_width = 30
 let g:tagbar_autofocus = 1
 let g:tagbar_sort = 0
-let g:tagbar_type_rave = { 
-    \ 'deffile' : '/users/leozha/.ctags', 
-    \ 'ctagstype' : 'rave', 
-    \ 'kinds'  : [ 
-     \ 'g:groups', 
-     \ 'r:rules', 
-     \ 'v:variables', 
-     \ 'm:modules', 
-     \ 't:tables' 
-    \ ] 
-\ } 
+let g:tagbar_type_rave = {
+			\ 'deffile' : '/users/leozha/.ctags',
+			\ 'ctagstype' : 'rave',
+			\ 'kinds'  : [
+			\ 'g:groups',
+			\ 'r:rules',
+			\ 'v:variables',
+			\ 'm:modules',
+			\ 't:tables'
+			\ ]
+			\ }
 " }}}2
 
 " Simplenote {{{2
@@ -487,7 +432,7 @@ endif
 
 
 " Menu setting : _gui_menu
-	"解决菜单乱码
+"解决菜单乱码
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 set guioptions-=b           "关闭下方和右边的滚动条
@@ -518,7 +463,7 @@ if has('statusline')
 	set statusline+=\ [%{getcwd()}]          " Current dir
 endif
 
-	
+
 " Misc GUI settings : _gui_misc
 set showmode                    " Display the current mode
 set cursorline                  " Highlight current line
@@ -577,25 +522,25 @@ set colorcolumn=81              " codes per line should less than 80
 " .vimrc.before.local file:
 "   let g:spf13_keep_trailing_whitespace = 1
 "autocmd FileType java,php,javascript,python,xml,yml,perl,sql
-	"\ autocmd BufWritePre <buffer>
-	"\ if !exists('g:spf13_keep_trailing_whitespace')
-	"\    call StripTrailingWhitespace()
-	"\ endif
+"\ autocmd BufWritePre <buffer>
+"\ if !exists('g:spf13_keep_trailing_whitespace')
+"\    call StripTrailingWhitespace()
+"\ endif
 "autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
 " preceding line best in a plugin but here for now.
 "au BufNewFile,BufRead *.py
-	"\ set tabstop=4
-	"\ set softtabstop=4
-	"\ set shiftwidth=4
-	"\ set textwidth=79
-	"\ set expandtab
-	"\ set autoindent
-	"\ set fileformat=unix
+"\ set tabstop=4
+"\ set softtabstop=4
+"\ set shiftwidth=4
+"\ set textwidth=79
+"\ set expandtab
+"\ set autoindent
+"\ set fileformat=unix
 
 au BufNewFile,BufRead *.js, *.html, *.css
-	\ set tabstop=2
-	\ set softtabstop=2
-	\ set shiftwidth=2
+			\ set tabstop=2
+			\ set softtabstop=2
+			\ set shiftwidth=2
 " }}}1
 " ----------------------------------------------------------------------------
 
