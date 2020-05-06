@@ -2,7 +2,6 @@
 " To-do list: {{{1
 " 增加quickfix的key binding
 " }}}1
-" ----------------------------------------------------------------------------
 
 " TOC {{{1
 " Environment                    : _env
@@ -29,10 +28,8 @@
 
 " Formatting                     : _fmt
 " }}}1
-" ----------------------------------------------------------------------------
 
-" ENVIRONMENT:_env
-" ENVIRONMENT {{{1
+" ENVIRONMENT:_env {{{1
 " Identify platform _env_platform
 silent function! OSX()
 return has('macunix')
@@ -67,10 +64,8 @@ if LINUX()
 	source $VIMRUNTIME/mswin.vim
 endif
 " }}}1
-" ----------------------------------------------------------------------------
 
-" General: _gen
-" General {{{1
+" General: _gen {{{1
 " Encoding: _gen_encoding
 set encoding=utf-8
 set fileencodings=utf-8,chinese,latin-1
@@ -117,10 +112,8 @@ set nobackup
 set nowb
 set noswapfile
 " }}}1
-" ----------------------------------------------------------------------------
 
-" Key (re)Mappings : _mapping
-" Key (re)Mappings {{{1
+" Key (re)Mappings : _mapping {{{1
 let mapleader = ','
 
 " Learn Vimscript in the hard way
@@ -178,10 +171,8 @@ nnoremap <leader>bp :bp<CR>
 " Abbreviations
 nnoremap <leader>dt "=strftime("%d/%m/%y %H:%M:%S")<CR>p
 " }}}1
-" ----------------------------------------------------------------------------
 
-" Plugin: _plugin
-" Plugin {{{1
+" Plugin: _plugin {{{1
 
 " Specify a directory for plugins
 " - For Neovim: ~/.local/share/nvim/plugged
@@ -206,20 +197,24 @@ Plug 'tpope/vim-surround'
 Plug 'godlygeek/tabular'
 Plug 'scrooloose/nerdcommenter'
 Plug 'plasticboy/vim-markdown'
-Plug 'Rykka/riv.vim'
+"Plug 'Rykka/riv.vim'
 
 " Programming plugins
 Plug 'Yggdroot/indentLine'
-Plug 'ludovicchabant/vim-gutentags'
+"Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar'
-Plug 'tpope/vim-cucumber'
-Plug 'ludovicchabant/vim-lawrencium'
+"Plug 'tpope/vim-cucumber'
+"Plug 'ludovicchabant/vim-lawrencium'
 
 " Color schema/display plugins
 Plug 'dracula/vim'
 Plug 'sickill/vim-monokai'
 Plug 'altercation/vim-colors-solarized'
-Plug 'bling/vim-airline'
+"Plug 'bling/vim-airline'
+
+" Vim org mode
+Plug 'jceb/vim-orgmode'
+Plug 'vim-scripts/utl.vim'
 
 " Deprecated plugins
 "Plug 'Valloric/YouCompleteMe'
@@ -245,9 +240,10 @@ map <F11> :Voom<CR>
 "以便在普通模式下始终是英文输入模式，
 "切换回插入模式时恢复离开前的输入法输入模式。
 
-" Vim-markdown
+" Vim-markdown {{{2
 " disable auto-folding
 let g:vim_markdown_folding_disabled=1
+" }}}2
 
 " FZF {{{2
 "nmap <C-p> :Files<CR>
@@ -360,16 +356,9 @@ let g:tagbar_type_rave = {
 			\ }
 " }}}2
 
-" Simplenote {{{2
-" let g:SimplenoteUsername = "lizhang0101@gmail.com"
-" let g:SimplenotePassword = ""
-" }}}2
-
 " }}}1
-" ----------------------------------------------------------------------------
 
-" Vim UI : _gui
-" Vim UI {{{1
+" Vim UI : _gui {{{1
 " Color setting : _gui_color
 " Allow to trigger background
 function! ToggleBG()
@@ -497,10 +486,8 @@ set linebreak                   "不在单词中间断行。设置了这个选�
 "autocmd FileType text setlocal textwidth=78
 set foldmethod=marker
 " }}}1
-" ----------------------------------------------------------------------------
 
-" Formatting : _fmt
-" Formatting {{{1
+" Formatting : _fmt {{{1
 "set nowrap                      " Do not wrap long lines
 "set wrap                      " Do not wrap long lines
 set autoindent                  " Indent at the same level of the previous line
@@ -542,6 +529,8 @@ au BufNewFile,BufRead *.js, *.html, *.css
 			\ set softtabstop=2
 			\ set shiftwidth=2
 " }}}1
-" ----------------------------------------------------------------------------
+
+" Macros
+let @y = "yy9pA_0 TodayjA_1 + 1 daysjA_2 + 2 daysjA_3 + 4 daysjA_4 + 7 daysjA_5 + 15 daysjA_6 + 30 daysjA_7 + 90 daysjA_8 + 180 days"
 
 " ---EOF---
