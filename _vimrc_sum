@@ -60,7 +60,7 @@ endif
 " Linux Compatible
 if LINUX()
 	set runtimepath=$HOME/.vim,$HOME/.vim/after,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after
-	source $VIMRUNTIME/vimrc_example.vim
+	"source $VIMRUNTIME/vimrc_example.vim
 	source $VIMRUNTIME/mswin.vim
 endif
 " }}}1
@@ -210,7 +210,7 @@ Plug 'majutsushi/tagbar'
 Plug 'dracula/vim'
 Plug 'sickill/vim-monokai'
 Plug 'altercation/vim-colors-solarized'
-"Plug 'bling/vim-airline'
+Plug 'bling/vim-airline'
 
 " Vim org mode
 Plug 'jceb/vim-orgmode'
@@ -246,13 +246,7 @@ let g:vim_markdown_folding_disabled=1
 " }}}2
 
 " FZF {{{2
-"nmap <C-p> :Files<CR>
-nmap <C-p> :call CallFZF()<CR>
-
-function! CallFZF()
-	cd ~/csz/
-	Files
-endfunction
+nmap <C-p> :Files<CR>
 " }}}2
 
 " Easymotion {{{2
@@ -375,8 +369,8 @@ noremap <leader>bg :call ToggleBG()<CR>
 "set background=dark         " Assume a dark background
 "set background=light         " Assume a dark background
 "colorscheme solarized
-colorscheme desert
-"colorscheme dracula
+"colorscheme desert
+colorscheme dracula
 "colorscheme molokai
 "let g:solarized_termcolors=256
 "let g:solarized_termtrans=1
@@ -492,7 +486,7 @@ set foldmethod=marker
 "set wrap                      " Do not wrap long lines
 set autoindent                  " Indent at the same level of the previous line
 set shiftwidth=4                " Use indents of 4 spaces
-"set expandtab                   " Tabs are spaces, not tabs
+set expandtab                   " Tabs are spaces, not tabs
 set smarttab                    "当使用 et 将 Tab 替换为空格之后，按下一个 Tab 键就能插入 4 个空格，但要想删除这 4 个空格，就得按 4 下 Backspace，很不方便。设置 smarttab 之后，就可以只按一下 Backspace 就删除 4 个空格了。
 set tabstop=4                   " An indentation every four columns
 set softtabstop=4               " Let backspace delete indent
